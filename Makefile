@@ -31,6 +31,8 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	sudo yum --nogpgcheck --installroot=$(abspath $(ROOTFS)).tmp groupinstall "minimal install" --assumeyes
 	echo "Updating"
 	sudo chroot $(ROOTFS).tmp yum upgrade --assumeyes
+	echo "Install kernel and boot loader"
+	sudo chroot $(ROOTFS).tmp yum install kernel grub2 --assumeyes
 	echo
 	echo "writing configuration 1: /etc/fstab"
 	sudo cp fstab $(ROOTFS).tmp/etc/
