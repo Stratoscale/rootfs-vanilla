@@ -8,7 +8,7 @@ clean:
 
 build/$(FEDORA_RELEASE_RPM_NAME):
 	-mkdir $(@D)
-	yumdownloader --destdir=build fedora-release
+	yumdownloader --config=frozenfedora.yum.conf --destdir=build fedora-release
 	test -e $@
 
 $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
@@ -24,21 +24,21 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	sudo rpm --root $(abspath $(ROOTFS)).tmp --initdb
 	sudo rpm --root $(abspath $(ROOTFS)).tmp -ivh $<
 	echo "Blocking default fedora repositories"
-	sudo sed -i 's/enabled=1/enabled=0/' $(ROOTFS).tmp/etc/yum.repos.d/fedora*repo*
+	sudo rm -fr $(ROOTFS).tmp/etc/yum.repos.d/*repo*
 	echo "Adding strato frozen repositories"
-	sudo cp /etc/yum.repos.d/frozenstrato.repo $(ROOTFS).tmp/etc/yum.repos.d
+	sed 's/.*reposdir.*//' frozenfedora.yum.conf | sudo sh -c "cat > $(ROOTFS).tmp/etc/yum.conf"
 	echo "Installing minimal install"
 	sudo yum --nogpgcheck --installroot=$(abspath $(ROOTFS)).tmp groupinstall "minimal install" --assumeyes
+	echo "Updating"
+	sudo chroot $(ROOTFS).tmp yum upgrade --assumeyes
 	echo
-	echo "writing configuration 1: re-disabling default fedora repositories"
-	sudo sed -i 's/enabled=1/enabled=0/' $(ROOTFS).tmp/etc/yum.repos.d/fedora*repo*
-	echo "writing configuration 2: /etc/fstab"
+	echo "writing configuration 1: /etc/fstab"
 	sudo cp fstab $(ROOTFS).tmp/etc/
-	echo "writing configuration 3: disabling selinux"
+	echo "writing configuration 2: disabling selinux"
 	sudo cp selinux.config $(ROOTFS).tmp/etc/selinux/config
-	echo "writing configuration 4: /etc/resov.conf"
+	echo "writing configuration 3: /etc/resov.conf"
 	sudo cp /etc/resolv.conf $(ROOTFS).tmp/etc/
-	echo "writing configuration 5: ethernet configuration"
+	echo "writing configuration 4: ethernet configuration"
 	sudo cp ifcfg-eth0 $(ROOTFS).tmp/etc/sysconfig/network-scripts/ifcfg-eth0
 	echo
 	echo "creating missing directories"
