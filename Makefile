@@ -32,17 +32,15 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	echo "Updating"
 	sudo chroot $(ROOTFS).tmp yum upgrade --assumeyes
 	echo "Install kernel and boot loader"
-	sudo chroot $(ROOTFS).tmp yum install kernel grub2 --assumeyes
+	sudo chroot $(ROOTFS).tmp yum install kernel grub2 fedora-release --assumeyes
 	echo
-	echo "writing configuration 1: /etc/fstab"
-	sudo cp fstab $(ROOTFS).tmp/etc/
-	echo "writing configuration 2: disabling selinux"
+	echo "writing configuration 1: disabling selinux"
 	sudo cp selinux.config $(ROOTFS).tmp/etc/selinux/config
-	echo "writing configuration 3: /etc/resov.conf"
+	echo "writing configuration 2: /etc/resov.conf"
 	sudo cp /etc/resolv.conf $(ROOTFS).tmp/etc/
-	echo "writing configuration 4: ethernet configuration"
+	echo "writing configuration 3: ethernet configuration"
 	sudo cp ifcfg-eth0 $(ROOTFS).tmp/etc/sysconfig/network-scripts/ifcfg-eth0
-	echo "writing configuration 5: boot-loader"
+	echo "writing configuration 4: boot-loader"
 	sudo ./chw.sh $(ROOTFS).tmp grub2-mkconfig -o /boot/grub2/grub.cfg
 	echo
 	echo "creating missing directories"
