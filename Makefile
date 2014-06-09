@@ -32,7 +32,7 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	echo "Updating"
 	sudo chroot $(ROOTFS).tmp yum upgrade --assumeyes
 	echo "Install kernel and boot loader"
-	sudo chroot $(ROOTFS).tmp yum install kernel grub2 fedora-release --assumeyes
+	sudo chroot $(ROOTFS).tmp yum install kernel grub2 fedora-release kexec-tools --assumeyes
 	echo
 	echo "writing configuration 1: disabling selinux"
 	sudo cp selinux.config $(ROOTFS).tmp/etc/selinux/config
