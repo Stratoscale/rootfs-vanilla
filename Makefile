@@ -6,6 +6,9 @@ all: $(ROOTFS)
 submit: $(ROOTFS)
 	sudo -E solvent submitproduct rootfs $<
 
+approve: $(ROOTFS)
+	sudo -E solvent approve --product=rootfs
+
 clean:
 	sudo rm -fr build
 
