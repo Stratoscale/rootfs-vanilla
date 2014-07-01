@@ -47,7 +47,8 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	echo "writing configuration 3: ethernet configuration"
 	sudo cp ifcfg-eth0 $(ROOTFS).tmp/etc/sysconfig/network-scripts/ifcfg-eth0
 	echo "writing configuration 4: boot-loader"
-	sudo ./chw.sh $(ROOTFS).tmp grub2-mkconfig -o /boot/grub2/grub.cfg
+	sudo ./chroot.sh $(ROOTFS).tmp grub2-mkconfig -o /boot/grub2/grub.cfg || true
+	test -e $(ROOTFS).tmp/boot/grub2/grub.cfg
 	echo
 	echo "creating missing directories"
 	sudo cp -a /dev $(ROOTFS).tmp/
