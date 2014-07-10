@@ -52,7 +52,4 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	test -e $(ROOTFS).tmp/boot/grub2/grub.cfg
 	sudo grep console.ttyS0 $(ROOTFS).tmp/boot/grub2/grub.cfg
 	echo
-	echo "creating missing directories"
-	sudo cp -a /dev $(ROOTFS).tmp/
-	echo
 	mv $(ROOTFS).tmp $(ROOTFS)
