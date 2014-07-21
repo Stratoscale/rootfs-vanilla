@@ -9,7 +9,7 @@ fi
 mount -o bind /proc $CHROOT/proc
 mount -o bind /dev $CHROOT/dev
 mount -o bind /sys $CHROOT/sys
-chroot $CHROOT $@
+chroot $CHROOT "$@"
 RESULT=$?
 umount $CHROOT/sys
 umount $CHROOT/dev
