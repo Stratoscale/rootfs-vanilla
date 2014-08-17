@@ -51,5 +51,6 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	sudo ./chroot.sh $(ROOTFS).tmp grub2-mkconfig -o /boot/grub2/grub.cfg || true
 	test -e $(ROOTFS).tmp/boot/grub2/grub.cfg
 	sudo grep console.ttyS0 $(ROOTFS).tmp/boot/grub2/grub.cfg
+	sudo rm -fr $(ROOTFS).tmp/tmp/* $(ROOTFS).tmp/var/tmp/*
 	echo
 	mv $(ROOTFS).tmp $(ROOTFS)
