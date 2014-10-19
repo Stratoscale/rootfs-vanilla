@@ -7,11 +7,10 @@ if [ "$CHROOT" == "" ]; then
     exit 1
 fi
 mount -o bind /proc $CHROOT/proc
-mount -o bind /dev $CHROOT/dev
+cp -a /dev/* $CHROOT/dev/
 mount -o bind /sys $CHROOT/sys
 chroot $CHROOT "$@"
 RESULT=$?
 umount $CHROOT/sys
-umount $CHROOT/dev
 umount $CHROOT/proc
 exit $RESULT

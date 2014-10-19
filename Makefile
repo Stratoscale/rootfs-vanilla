@@ -38,7 +38,7 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	echo "Updating"
 	sudo chroot $(ROOTFS).tmp yum upgrade --assumeyes
 	echo "Install kernel and boot loader"
-	sudo chroot $(ROOTFS).tmp yum install kernel grub2 fedora-release kexec-tools --assumeyes
+	sudo chroot $(ROOTFS).tmp yum install kernel grub2 fedora-release kexec-tools lvm2 --assumeyes
 	echo
 	echo "writing configuration 1: disabling selinux"
 	sudo cp selinux.config $(ROOTFS).tmp/etc/selinux/config
@@ -50,6 +50,8 @@ $(ROOTFS): build/$(FEDORA_RELEASE_RPM_NAME)
 	sudo cp etc_default_grub $(ROOTFS).tmp/etc/default/grub
 	sudo ./chroot.sh $(ROOTFS).tmp grub2-mkconfig -o /boot/grub2/grub.cfg || true
 	test -e $(ROOTFS).tmp/boot/grub2/grub.cfg
+	sudo sh -c "echo 'add_dracutmodules+=\"lvm\"' >> $(ROOTFS).tmp/etc/dracut.conf"
+	sudo ./chroot.sh $(ROOTFS).tmp dracut --kver=`ls $(ROOTFS).tmp/lib/modules` --force
 	sudo grep console.ttyS0 $(ROOTFS).tmp/boot/grub2/grub.cfg
 	sudo rm -fr $(ROOTFS).tmp/tmp/* $(ROOTFS).tmp/var/tmp/*
 	echo
