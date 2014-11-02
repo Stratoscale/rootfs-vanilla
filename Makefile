@@ -3,10 +3,10 @@ ROOTFS = build/root
 
 all: $(ROOTFS)
 
-submit: $(ROOTFS)
-	sudo -E solvent submitproduct rootfs $<
+submit:
+	sudo -E solvent submitproduct rootfs $(ROOTFS)
 
-approve: $(ROOTFS)
+approve:
 	sudo -E solvent approve --product=rootfs
 
 clean:
